@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Varela+Round&display=swap" rel="stylesheet">
+  <title>Tournament Results</title>
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      height: 100%;
+      overflow: hidden;
+      background-position-x: right;
+    }
+    .header, .subheader {
+      color: black;
+      text-align: left;
+      margin-top: 20px;
+      margin-left: 20px;
+      font-size: 2.5em;
+      font-weight: bold;
+      font-family: 'Anton', sans-serif;
+    }
+    .subheader {
+      margin-top: 0;
+      font-size: 1.7em;
+    }
+    .container {
+      padding: 20px;
+      max-width: 412px;
+      margin: 0 auto;
+      max-height: 62%;
+      overflow: auto;
+    }
+    .loading {
+      text-align: center;
+      color: #555;
+      margin: 20px 0;
+    }
+    .spinner {
+      border: 4px solid #ccc;
+      border-top: 4px solid #3366cc;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .separator {
+      background-image: url(assets/separator.png);
+      width: 80%;
+      aspect-ratio: 20;
+      background-repeat: no-repeat;
+      margin-left: 20px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+    .row:last-child {
+      border-bottom: none;
+    }
+    .albiLogo, .ddlogo {
+      background-image: url(assets/albiLogo.png);
+      position: fixed;
+      bottom: 3%;
+      left: 0;
+      width: 80px;
+      aspect-ratio: 1.5;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .ddlogo {
+      left: 25%;
+      background-image: url(assets/ddlogo.png);
+      width: 70%;
+      aspect-ratio: 3;
+    }
+    body {
+      background-image: url(assets/background.png);
+      background-size: cover;
+    }
+    #results {
+      font-weight: bold;
+      font-size: 120%;
+    }
+    .row:nth-child(-n+3) :is(#results .order, #results .score) {
+      color: #faea10;
+      -webkit-text-stroke: 0.5px #684527;
+    }
+    #results .order {
+      font-size: 150%;
+    }
+    #results .name {
+      margin-left: 10px;
+    }
+    .name {
+      font-family: 'Fira Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Tournament Results</div>
+  <div class="separator"></div>
+  <div class="subheader">championship</div>
+  <div class="container">
+    <div class="loading" id="loading">
+      <div class="spinner"></div><br />
+      Loading tournament results
+    </div>
+    <div id="results" style="display: none;"></div>
+  </div>
+  <a href="https://albi.cz" class="albiLogo"></div>
+  <a href="https://albi.cz/dirt-and-dust/" class="ddlogo"></div>
+<script>
+  window.addEventListener("DOMContentLoaded", async () => {
+    let params = new URLSearchParams(window.location.search);
+    let tournamentName = params.get("tournament");
+    document.querySelector(".header").innerHTML = tournamentName
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbzuR-wFoGxaXIjQ4xNS5PaDdM-FZhAE3Vl77jIb0FR7Hf8DgQwCe7T4eaQVdlJdTid_zQ/exec?tournament=" + encodeURIComponent(tournamentName));
+      let results = await response.json()
+      console.log(results)
+      results = results.sort((a, b) => b.score - a.score);
+
+      document.getElementById('loading').style.display = 'none';
+      const resultsEl = document.getElementById('results');
+      resultsEl.style.display = 'block';
+
+      results.forEach(({ name, score }, index) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<span><span class='order'>${index + 1}</span><span class='name'>${name}</span></span><span class='score'>${score} pt</span>`;
+        resultsEl.appendChild(row);
+      });
+    } catch (err) {
+      document.getElementById('loading').textContent = "Failed to load data.";
+      console.error("Fetch error:", err);
+    }
+  });
+</script>
+
+</body>
+</html>
