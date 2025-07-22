@@ -18,12 +18,13 @@
     }
     .header, .subheader {
       color: black;
-      text-align: left;
       margin-top: 20px;
       margin-left: 20px;
       font-size: 2.5em;
       font-weight: bold;
       font-family: 'Anton', sans-serif;
+      margin: 0 auto;
+      text-align: center;
     }
     .subheader {
       margin-top: 0;
@@ -56,10 +57,11 @@
     }
     .separator {
       background-image: url(assets/separator.png);
-      width: 80%;
+      width: 100%;
       aspect-ratio: 20;
       background-repeat: no-repeat;
-      margin-left: 20px;
+      margin-left: 0 auto;
+      background-position: center;
     }
     .row {
       display: flex;
@@ -84,11 +86,16 @@
       background-image: url(assets/ddlogo.png);
       width: 70%;
       aspect-ratio: 3;
+      position: absolute;
     }
-    body {
-      background-image: url(assets/background.png);
-      background-size: cover;
-    }
+.content {
+  background-image: url(assets/background.png);
+  background-size: cover;
+  height: 100%;
+  position: relative;
+  max-width: 700px;
+  width: 100%;
+}
     #results {
       font-weight: bold;
       font-size: 120%;
@@ -106,21 +113,65 @@
     .name {
       font-family: 'Fira Sans', sans-serif;
     }
+    body {
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+.bg {
+  top: 0;
+  height: 100%;
+  background-image: url(assets/background_sides.png);
+  background-size: cover;
+  z-index: -1;
+  width: calc(100% - 700px);
+}
+    .bg-left {
+      left: 0;
+      background-position: right;
+    }
+    .bg-right {
+      right: 0;
+      background-position: right;
+      transform: scaleX(-1);
+    }
+    @media (700px <= width) {
+      .content {
+        background-image: url(assets/background_wide.png);
+      }
+      .albiLogo {
+        width: 120px;
+      }
+    }
+    @media (1200px <= width) {
+    .ddlogo {
+      left: 20px;
+      top: 10px;
+      width: 400px;
+      height: 300px;
+      position: fixed;
+    }
+    }
   </style>
 </head>
 <body>
-  <div class="header">Tournament Results</div>
-  <div class="separator"></div>
-  <div class="subheader">championship</div>
-  <div class="container">
-    <div class="loading" id="loading">
-      <div class="spinner"></div><br />
-      Loading tournament results
+  <div class="bg bg-left"></div>
+  <div class="content">
+    <div class="header">Tournament Results</div>
+    <div class="separator"></div>
+    <div class="subheader">championshipasdf</div>
+    <div class="container">
+      <div class="loading" id="loading">
+        <div class="spinner"></div><br />
+        Loading tournament results
+      </div>
+      <div id="results" style="display: none;"></div>
     </div>
-    <div id="results" style="display: none;"></div>
+    <a href="https://albi.cz" class="albiLogo"></a>
+    <a href="https://albi.cz/dirt-and-dust/" class="ddlogo"></a>
   </div>
-  <a href="https://albi.cz" class="albiLogo"></div>
-  <a href="https://albi.cz/dirt-and-dust/" class="ddlogo"></div>
+  <div class="bg bg-right"></div>
 <script>
   window.addEventListener("DOMContentLoaded", async () => {
     let params = new URLSearchParams(window.location.search);
